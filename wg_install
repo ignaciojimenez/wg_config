@@ -1,15 +1,11 @@
-WIREGUARD INSTALLATION
-# Adding Debian unstable repos (not in raspbian repos yet)
-sudo apt install -y raspberrypi-kernel-headers lsb_release
-echo "deb http://deb.debian.org/debian/ unstable main" | sudo tee --append /etc/apt/sources.list.d/unstable.list
-sudo apt-key adv --keyserver   keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC
-sudo apt-key adv --keyserver   keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
-wget -O - https://ftp-master.debian.org/keys/archive-key-$(lsb_release -sr).asc | sudo apt-key add -
-printf 'Package: *\nPin: release a=unstable\nPin-Priority: 150\n' | sudo tee --append /etc/apt/preferences.d/limit-unstable
+# Get signing keys to verify the new packages, otherwise they will not install
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
 
-# Finally installin wireguard
+# Add the Buster backport repository to apt sources.list
+echo 'deb http://httpredir.debian.org/debian buster-backports main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/debian-backports.list
+ 
 sudo apt update
-sudo apt install -y wireguard 
+sudo apt --yes install wireguard
 
 # Allowing ipv4 forwarding
 sudo perl -pi -e 's/#{1,}?net.ipv4.ip_forward ?= ?(0|1)/net.ipv4.ip_forward = 1/g' /etc/sysctl.conf 
